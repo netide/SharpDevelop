@@ -99,20 +99,30 @@ namespace ICSharpCode.TextEditor
 			hScrollBar.ValueChanged += new EventHandler(HScrollBarValueChanged);
 			Controls.Add(this.hScrollBar);
 			ResizeRedraw = true;
-			
-			Document.TextContentChanged += DocumentTextContentChanged;
-			Document.DocumentChanged += AdjustScrollBarsOnDocumentChange;
-			Document.UpdateCommited  += DocumentUpdateCommitted;
+
+            motherTextEditorControl.DocumentAssigned += DocumentAssigned;
+            DocumentAssigned(motherTextEditorControl, new DocumentAssignedEventArgs(null, Document));
 		}
+
+        void DocumentAssigned(object sender, DocumentAssignedEventArgs e)
+        {
+            if (e.OldDocument != null) {
+                e.OldDocument.TextContentChanged -= DocumentTextContentChanged;
+                e.OldDocument.DocumentChanged -= AdjustScrollBarsOnDocumentChange;
+                e.OldDocument.UpdateCommited -= DocumentUpdateCommitted;
+            }
+            if (e.NewDocument != null) {
+                e.NewDocument.TextContentChanged += DocumentTextContentChanged;
+                e.NewDocument.DocumentChanged += AdjustScrollBarsOnDocumentChange;
+                e.NewDocument.UpdateCommited += DocumentUpdateCommitted;
+            }
+        }
 		
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (!disposed) {
 					disposed = true;
-					Document.TextContentChanged -= DocumentTextContentChanged;
-					Document.DocumentChanged -= AdjustScrollBarsOnDocumentChange;
-					Document.UpdateCommited  -= DocumentUpdateCommitted;
 					motherTextEditorControl = null;
 					if (vScrollBar != null) {
 						vScrollBar.Dispose();

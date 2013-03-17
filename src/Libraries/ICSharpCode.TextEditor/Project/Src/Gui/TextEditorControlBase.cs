@@ -96,12 +96,9 @@ namespace ICSharpCode.TextEditor
 			set {
 				if (value == null)
 					throw new ArgumentNullException("value");
-				if (document != null) {
-					document.DocumentChanged -= OnDocumentChanged;
-				}
-				document = value;
-				document.UndoStack.TextEditorControl = this;
-				document.DocumentChanged += OnDocumentChanged;
+                var eventArgs = new DocumentAssignedEventArgs(document, value);
+                document = value;
+                OnDocumentAssigned(eventArgs);
 			}
 		}
 		
@@ -109,8 +106,27 @@ namespace ICSharpCode.TextEditor
 		{
 			OnTextChanged(e);
 		}
-		
-		[EditorBrowsable(EditorBrowsableState.Always), Browsable(true)]
+
+        public event DocumentAssignedEventHandler DocumentAssigned;
+
+	    protected virtual void OnDocumentAssigned(DocumentAssignedEventArgs e)
+	    {
+            if (e.OldDocument != null) {
+                e.OldDocument.DocumentChanged -= OnDocumentChanged;
+                e.OldDocument.UndoStack.TextEditorControl = null;
+            }
+
+            if (e.NewDocument != null) {
+                e.NewDocument.DocumentChanged += OnDocumentChanged;
+                e.NewDocument.UndoStack.TextEditorControl = this;
+            }
+
+	        var handler = DocumentAssigned;
+	        if (handler != null)
+	            handler(this, e);
+	    }
+
+	    [EditorBrowsable(EditorBrowsableState.Always), Browsable(true)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 		[Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
 		public override string Text {
@@ -740,8 +756,7 @@ namespace ICSharpCode.TextEditor
 		{
 			if (disposing) {
 				HighlightingManager.Manager.ReloadSyntaxHighlighting -= new EventHandler(OnReloadHighlighting);
-				document.HighlightingStrategy = null;
-				document.UndoStack.TextEditorControl = null;
+                OnDocumentAssigned(new DocumentAssignedEventArgs(document, null));
 			}
 			base.Dispose(disposing);
 		}

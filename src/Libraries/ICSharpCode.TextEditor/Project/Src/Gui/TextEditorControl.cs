@@ -69,7 +69,6 @@ namespace ICSharpCode.TextEditor
 			textAreaPanel.Dock = DockStyle.Fill;
 			
 			Document = (new DocumentFactory()).CreateDocument();
-			Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy();
 			
 			primaryTextArea  = new TextAreaControl(this);
 			activeTextAreaControl = primaryTextArea;
@@ -81,9 +80,30 @@ namespace ICSharpCode.TextEditor
 			InitializeTextAreaControl(primaryTextArea);
 			Controls.Add(textAreaPanel);
 			ResizeRedraw = true;
-			Document.UpdateCommited += new EventHandler(CommitUpdateRequested);
 			OptionsChanged();
 		}
+
+        protected override void OnDocumentAssigned(DocumentAssignedEventArgs e)
+        {
+            base.OnDocumentAssigned(e);
+
+            if (e.OldDocument != null) {
+                e.OldDocument.UpdateCommited -= CommitUpdateRequested;
+            }
+            if (e.NewDocument != null) {
+                e.NewDocument.UpdateCommited += CommitUpdateRequested;
+
+                if (e.NewDocument.HighlightingStrategy == null)
+                    e.NewDocument.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy();
+
+                // Only do this when we've completed initialization.
+
+                if (primaryTextArea != null) {
+                    OptionsChanged();
+                    Refresh();
+                }
+            }
+        }
 		
 		protected virtual void InitializeTextAreaControl(TextAreaControl newControl)
 		{
@@ -192,8 +212,6 @@ namespace ICSharpCode.TextEditor
 					printDocument.PrintPage  -= new PrintPageEventHandler(this.PrintPage);
 					printDocument = null;
 				}
-				Document.UndoStack.ClearAll();
-				Document.UpdateCommited -= new EventHandler(CommitUpdateRequested);
 				if (textAreaPanel != null) {
 					if (secondaryTextArea != null) {
 						secondaryTextArea.Dispose();
@@ -223,7 +241,7 @@ namespace ICSharpCode.TextEditor
 		
 		void CommitUpdateRequested(object sender, EventArgs e)
 		{
-			if (IsInUpdate) {
+			if (IsInUpdate || primaryTextArea == null) {
 				return;
 			}
 			foreach (TextAreaUpdate update in Document.UpdateQueue) {

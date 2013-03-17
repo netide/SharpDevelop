@@ -121,11 +121,21 @@ namespace ICSharpCode.TextEditor
 			this.textArea = textArea;
 			textArea.GotFocus  += new EventHandler(GotFocus);
 			textArea.LostFocus += new EventHandler(LostFocus);
+
+            textArea.MotherTextEditorControl.DocumentAssigned += DocumentAssigned;
+            DocumentAssigned(textArea.MotherTextEditorControl, new DocumentAssignedEventArgs(null, textArea.Document));
+
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 				caretImplementation = new ManagedCaret(this);
 			else
 				caretImplementation = new Win32Caret(this);
 		}
+
+        void DocumentAssigned(object sender, DocumentAssignedEventArgs e)
+        {
+            if (e.OldDocument != null)
+                e.OldDocument.UpdateCommited -= FirePositionChangedAfterUpdateEnd;
+        }
 		
 		public void Dispose()
 		{

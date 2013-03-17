@@ -181,9 +181,6 @@ namespace ICSharpCode.TextEditor
 			this.motherTextEditorControl    = motherTextEditorControl;
 			
 			caret            = new Caret(this);
-			selectionManager = new SelectionManager(Document, this);
-			
-			this.textAreaClipboardHandler = new TextAreaClipboardHandler(this);
 			
 			ResizeRedraw = true;
 			
@@ -211,9 +208,31 @@ namespace ICSharpCode.TextEditor
 			bracketshemes.Add(new BracketHighlightingSheme('[', ']'));
 			
 			caret.PositionChanged += new EventHandler(SearchMatchingBracket);
-			Document.TextContentChanged += new EventHandler(TextContentChanged);
-			Document.FoldingManager.FoldingsChanged += new EventHandler(DocumentFoldingsChanged);
+
+            motherTextEditorControl.DocumentAssigned += DocumentAssigned;
+            DocumentAssigned(motherTextAreaControl, new DocumentAssignedEventArgs(null, Document));
 		}
+
+        void DocumentAssigned(object sender, DocumentAssignedEventArgs e)
+        {
+            if (e.OldDocument != null) {
+                e.OldDocument.TextContentChanged -= new EventHandler(TextContentChanged);
+                e.OldDocument.FoldingManager.FoldingsChanged -= new EventHandler(DocumentFoldingsChanged);
+
+                textAreaClipboardHandler = null;
+                if (selectionManager != null) {
+                    selectionManager.Dispose();
+                    selectionManager = null;
+                }
+            }
+            if (e.NewDocument != null) {
+                e.NewDocument.TextContentChanged += new EventHandler(TextContentChanged);
+                e.NewDocument.FoldingManager.FoldingsChanged += new EventHandler(DocumentFoldingsChanged);
+
+                selectionManager = new SelectionManager(e.NewDocument, this);
+                textAreaClipboardHandler = new TextAreaClipboardHandler(this);
+            }
+        }
 		
 		public void UpdateMatchingBracket()
 		{
@@ -858,11 +877,6 @@ namespace ICSharpCode.TextEditor
 						caret.PositionChanged -= new EventHandler(SearchMatchingBracket);
 						caret.Dispose();
 					}
-					if (selectionManager != null) {
-						selectionManager.Dispose();
-					}
-					Document.TextContentChanged -= new EventHandler(TextContentChanged);
-					Document.FoldingManager.FoldingsChanged -= new EventHandler(DocumentFoldingsChanged);
 					motherTextAreaControl = null;
 					motherTextEditorControl = null;
 					foreach (AbstractMargin margin in leftMargins) {
