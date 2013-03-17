@@ -345,7 +345,10 @@ namespace ICSharpCode.TextEditor
 						}
 						break;
 					case TextMarkerType.SolidBlock:
-						g.FillRectangle(BrushRegistry.GetBrush(marker.Color), drawingRect);
+                        if (marker.HaveHatchStyle)
+                            g.FillRectangle(BrushRegistry.GetHatchBrush(marker.ForeColor, marker.Color, marker.HatchStyle), drawingRect);
+                        else
+						    g.FillRectangle(BrushRegistry.GetBrush(marker.Color), drawingRect);
 						break;
 				}
 			}
@@ -367,8 +370,11 @@ namespace ICSharpCode.TextEditor
 					if (marker.OverrideForeColor) {
 						foreColor = marker.ForeColor;
 					}
-					return BrushRegistry.GetBrush(marker.Color);
-				}
+                    if (marker.HaveHatchStyle)
+                        return BrushRegistry.GetHatchBrush(marker.ForeColor, marker.Color, marker.HatchStyle);
+                    else
+                        return BrushRegistry.GetBrush(marker.Color);
+                }
 			}
 			return null;
 		}

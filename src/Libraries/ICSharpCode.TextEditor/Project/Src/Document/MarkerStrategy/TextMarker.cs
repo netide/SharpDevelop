@@ -7,6 +7,7 @@
 
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace ICSharpCode.TextEditor.Document
 {
@@ -28,6 +29,8 @@ namespace ICSharpCode.TextEditor.Document
 		Color          foreColor;
 		string         toolTip = null;
 		bool           overrideForeColor = false;
+        HatchStyle     hatchStyle;
+        bool           haveHatchStyle;
 		
 		public TextMarkerType TextMarkerType {
 			get {
@@ -52,6 +55,18 @@ namespace ICSharpCode.TextEditor.Document
 				return overrideForeColor;
 			}
 		}
+
+        public bool HaveHatchStyle {
+            get {
+                return haveHatchStyle;
+            }
+        }
+
+        public HatchStyle HatchStyle {
+            get {
+                return hatchStyle;
+            }
+        }
 		
 		/// <summary>
 		/// Marks the text segment as read-only.
@@ -99,5 +114,13 @@ namespace ICSharpCode.TextEditor.Document
 			this.foreColor       = foreColor;
 			this.overrideForeColor = true;
 		}
+
+        public TextMarker(int offset, int length, TextMarkerType textMarkerType, Color color, Color foreColor, HatchStyle hatchStyle) : this(offset, length, textMarkerType, color, foreColor)
+        {
+            this.hatchStyle      = hatchStyle;
+            this.haveHatchStyle  = true;
+            // The fore color is used for the hatch.
+            this.overrideForeColor = false;
+        }
 	}
 }

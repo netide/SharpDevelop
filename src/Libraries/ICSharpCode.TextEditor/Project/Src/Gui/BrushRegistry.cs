@@ -19,7 +19,8 @@ namespace ICSharpCode.TextEditor
 	/// </summary>
 	public class BrushRegistry
 	{
-		static Dictionary<Color, Brush> brushes = new Dictionary<Color, Brush>();
+        static Dictionary<Color, Brush> brushes = new Dictionary<Color, Brush>();
+        static Dictionary<HatchBrushKey, HatchBrush> hatchBrushes = new Dictionary<HatchBrushKey, HatchBrush>();
 		static Dictionary<Color, Pen> pens = new Dictionary<Color, Pen>();
 		static Dictionary<Color, Pen> dotPens = new Dictionary<Color, Pen>();
 		
@@ -34,6 +35,19 @@ namespace ICSharpCode.TextEditor
 				return brush;
 			}
 		}
+
+        public static HatchBrush GetHatchBrush(Color foreColor, Color backColor, HatchStyle hatchStyle)
+        {
+            lock (hatchBrushes) {
+                var key = new HatchBrushKey(foreColor, backColor, hatchStyle);
+                HatchBrush brush;
+                if (!hatchBrushes.TryGetValue(key, out brush)) {
+                    brush = new HatchBrush(hatchStyle, foreColor, backColor);
+                    hatchBrushes.Add(key, brush);
+                }
+                return brush;
+            }
+        }
 		
 		public static Pen GetPen(Color color)
 		{
@@ -61,5 +75,39 @@ namespace ICSharpCode.TextEditor
 				return pen;
 			}
 		}
+
+        private struct HatchBrushKey : IEquatable<HatchBrushKey>
+        {
+            private readonly Color foreColor;
+            private readonly Color color;
+            private readonly HatchStyle hatchStyle;
+
+            public HatchBrushKey(Color foreColor, Color color, HatchStyle hatchStyle)
+            {
+                this.foreColor = foreColor;
+                this.color = color;
+                this.hatchStyle = hatchStyle;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is HatchBrushKey))
+                    return false;
+                return Equals((HatchBrushKey)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return unchecked (87 * (87 * foreColor.GetHashCode() ^ color.GetHashCode()) ^ hatchStyle.GetHashCode());
+            }
+
+            public bool Equals(HatchBrushKey other)
+            {
+                return
+                    foreColor == other.foreColor &&
+                    color == other.color &&
+                    hatchStyle == other.hatchStyle;
+            }
+        }
 	}
 }
