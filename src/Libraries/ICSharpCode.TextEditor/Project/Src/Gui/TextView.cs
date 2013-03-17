@@ -556,9 +556,11 @@ namespace ICSharpCode.TextEditor
 				// draw markers at line end
 				IList<TextMarker> markers = Document.MarkerStrategy.GetMarkers(currentLine.Offset + currentLine.Length);
 				foreach (TextMarker marker in markers) {
-					if (marker.TextMarkerType != TextMarkerType.SolidBlock) {
-						DrawMarker(g, marker, new RectangleF(physicalXPos, lineRectangle.Y, WideSpaceWidth, lineRectangle.Height));
-					}
+					if (marker.TextMarkerType != TextMarkerType.SolidBlock || marker.ExtendToBorder) {
+                        int width = marker.ExtendToBorder ? lineRectangle.Right - physicalXPos : WideSpaceWidth;
+
+						DrawMarker(g, marker, new RectangleF(physicalXPos, lineRectangle.Y, width, lineRectangle.Height));
+                    }
 				}
 			}
 			return physicalXPos;

@@ -11,12 +11,14 @@ using System.Drawing.Drawing2D;
 
 namespace ICSharpCode.TextEditor.Document
 {
+    [Flags]
 	public enum TextMarkerType
 	{
-		Invisible,
-		SolidBlock,
-		Underlined,
-		WaveLine
+		Invisible = 0,
+		SolidBlock = 1,
+		Underlined = 2,
+		WaveLine = 3,
+        ExtendToBorder = 4
 	}
 	
 	/// <summary>
@@ -24,6 +26,8 @@ namespace ICSharpCode.TextEditor.Document
 	/// </summary>
 	public class TextMarker : AbstractSegment
 	{
+        const TextMarkerType TypeMask = (TextMarkerType)3;
+
 		TextMarkerType textMarkerType;
 		Color          color;
 		Color          foreColor;
@@ -31,6 +35,7 @@ namespace ICSharpCode.TextEditor.Document
 		bool           overrideForeColor = false;
         HatchStyle     hatchStyle;
         bool           haveHatchStyle;
+        bool           extendToBorder;
 		
 		public TextMarkerType TextMarkerType {
 			get {
@@ -67,6 +72,12 @@ namespace ICSharpCode.TextEditor.Document
                 return hatchStyle;
             }
         }
+
+        public bool ExtendToBorder {
+            get {
+                return extendToBorder;
+            }
+        }
 		
 		/// <summary>
 		/// Marks the text segment as read-only.
@@ -100,8 +111,9 @@ namespace ICSharpCode.TextEditor.Document
 			if (length < 1) length = 1;
 			this.offset          = offset;
 			this.length          = length;
-			this.textMarkerType  = textMarkerType;
+			this.textMarkerType  = textMarkerType & TypeMask;
 			this.color           = color;
+            this.extendToBorder  = (textMarkerType & TextMarkerType.ExtendToBorder) != 0;
 		}
 		
 		public TextMarker(int offset, int length, TextMarkerType textMarkerType, Color color, Color foreColor)
@@ -109,10 +121,11 @@ namespace ICSharpCode.TextEditor.Document
 			if (length < 1) length = 1;
 			this.offset          = offset;
 			this.length          = length;
-			this.textMarkerType  = textMarkerType;
+            this.textMarkerType  = textMarkerType & TypeMask;
 			this.color           = color;
 			this.foreColor       = foreColor;
 			this.overrideForeColor = true;
+            this.extendToBorder  = (textMarkerType & TextMarkerType.ExtendToBorder) != 0;
 		}
 
         public TextMarker(int offset, int length, TextMarkerType textMarkerType, Color color, Color foreColor, HatchStyle hatchStyle) : this(offset, length, textMarkerType, color, foreColor)
