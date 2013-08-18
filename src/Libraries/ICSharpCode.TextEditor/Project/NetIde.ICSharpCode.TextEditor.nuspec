@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>NetIde.ICSharpCode.TextEditor</id>
+    <version>$version$</version>
+    <title>NetIde.ICSharpCode.TextEditor</title>
+    <authors>Pieter van Ginkel</authors>
+    <owners>Pieter van Ginkel</owners>
+    <licenseUrl>http://www.opensource.org/licenses/lgpl-2.1.php</licenseUrl>
+    <projectUrl>https://github.com/pvginkel/SharpDevelop</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Custom build of ICSharpCode.TextEditor for NetIde.</description>
+    <copyright>Pieter van Ginkel © 2012-2013</copyright>
+    <tags>text-editor netide</tags>
+  </metadata>
+  <files>
+    <file src="..\..\..\..\bin\ICSharpCode.TextEditor.dll" target="lib\net20" />
+  </files>
+</package>
