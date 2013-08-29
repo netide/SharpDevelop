@@ -15,5 +15,6 @@
   </metadata>
   <files>
     <file src="..\..\..\..\bin\ICSharpCode.TextEditor.dll" target="lib\net20" />
+    <file src="..\..\..\..\bin\ICSharpCode.TextEditor.xml" target="lib\net20" />
   </files>
 </package>

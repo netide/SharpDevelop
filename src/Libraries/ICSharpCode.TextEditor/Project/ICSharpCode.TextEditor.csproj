@@ -58,6 +58,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <OutputPath>..\..\..\..\bin\</OutputPath>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DocumentationFile>..\..\..\..\bin\ICSharpCode.TextEditor.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>Full</DebugType>
