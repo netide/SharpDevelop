@@ -77,13 +77,10 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
-            if (textArea.Document.ReadOnly) {
-                return false;
-            }
 			if (textArea.SelectionManager.SelectionIsReadonly) {
-				return false;
+				return;
 			}
 			textArea.Document.UndoStack.StartUndoGroup();
 			if (textArea.SelectionManager.HasSomethingSelected) {
@@ -106,7 +103,6 @@ namespace ICSharpCode.TextEditor.Actions
 				InsertTabAtCaretPosition(textArea);
 			}
 			textArea.Document.UndoStack.EndUndoGroup();
-            return true;
 		}
 	}
 	
@@ -179,13 +175,9 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
-            if (textArea.Document.ReadOnly) {
-                return false;
-            }
-            if (textArea.SelectionManager.HasSomethingSelected)
-            {
+			if (textArea.SelectionManager.HasSomethingSelected) {
 				foreach (ISelection selection in textArea.SelectionManager.SelectionCollection) {
 					int startLine = selection.StartPosition.Y;
 					int endLine   = selection.EndPosition.Y;
@@ -213,7 +205,6 @@ namespace ICSharpCode.TextEditor.Actions
 				}
 				textArea.SetCaretToDesiredColumn();
 			}
-            return true;
 		}
 	}
 	
@@ -223,10 +214,10 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			if (textArea.Document.ReadOnly) {
-				return false;
+				return;
 			}
 			
 			if (textArea.Document.HighlightingStrategy.Properties.ContainsKey("LineComment")) {
@@ -235,7 +226,6 @@ namespace ICSharpCode.TextEditor.Actions
 			           textArea.Document.HighlightingStrategy.Properties.ContainsKey("BlockCommentBegin")) {
 				new ToggleBlockComment().Execute(textArea);
 			}
-            return true;
 		}
 	}
 	
@@ -300,10 +290,10 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			if (textArea.Document.ReadOnly) {
-				return false;
+				return;
 			}
 			
 			string comment = null;
@@ -312,7 +302,7 @@ namespace ICSharpCode.TextEditor.Actions
 			}
 			
 			if (comment == null || comment.Length == 0) {
-				return true;
+				return;
 			}
 			
 			textArea.Document.UndoStack.StartUndoGroup();
@@ -351,7 +341,6 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.EndUpdate();
 			}
 			textArea.Document.UndoStack.EndUndoGroup();
-            return true;
 		}
 	}
 	
@@ -361,10 +350,10 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			if (textArea.Document.ReadOnly) {
-				return false;
+				return;
 			}
 			
 			string commentStart = null;
@@ -378,7 +367,7 @@ namespace ICSharpCode.TextEditor.Actions
 			}
 			
 			if (commentStart == null || commentStart.Length == 0 || commentEnd == null || commentEnd.Length == 0) {
-				return true;
+				return;
 			}
 			
 			int selectionStartOffset;
@@ -404,7 +393,6 @@ namespace ICSharpCode.TextEditor.Actions
 			
 			textArea.Document.CommitUpdate();
 			textArea.AutoClearSelection = false;
-            return true;
 		}
 		
 		public static BlockCommentRegion FindSelectedCommentRegion(IDocument document, string commentStart, string commentEnd, int selectionStartOffset, int selectionEndOffset)
@@ -559,11 +547,8 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
-            if (textArea.Document.ReadOnly) {
-                return false;
-            }
 			if (textArea.SelectionManager.HasSomethingSelected) {
 				Delete.DeleteSelection(textArea);
 			} else {
@@ -590,7 +575,6 @@ namespace ICSharpCode.TextEditor.Actions
 					textArea.EndUpdate();
 				}
 			}
-            return true;
 		}
 	}
 	
@@ -612,16 +596,13 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
-            if (textArea.Document.ReadOnly) {
-                return false;
-            }
 			if (textArea.SelectionManager.HasSomethingSelected) {
 				DeleteSelection(textArea);
 			} else {
 				if (textArea.IsReadOnly(textArea.Caret.Offset))
-					return false;
+					return;
 				
 				if (textArea.Caret.Offset < textArea.Document.TextLength) {
 					textArea.BeginUpdate();
@@ -643,7 +624,6 @@ namespace ICSharpCode.TextEditor.Actions
 					textArea.EndUpdate();
 				}
 			}
-            return true;
 		}
 	}
 	
@@ -653,7 +633,7 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			int curLineNr           = textArea.Caret.Line;
 			int requestedLineNumber = Math.Min(textArea.Document.GetNextVisibleLineAbove(curLineNr, textArea.TextView.VisibleLineCount), textArea.Document.TotalNumberOfLines - 1);
@@ -662,7 +642,6 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.Caret.Position = new TextLocation(0, requestedLineNumber);
 				textArea.SetCaretToDesiredColumn();
 			}
-            return true;
 		}
 	}
 	
@@ -672,7 +651,7 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			int curLineNr           = textArea.Caret.Line;
 			int requestedLineNumber = Math.Max(textArea.Document.GetNextVisibleLineBelow(curLineNr, textArea.TextView.VisibleLineCount), 0);
@@ -681,7 +660,6 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.Caret.Position = new TextLocation(0, requestedLineNumber);
 				textArea.SetCaretToDesiredColumn();
 			}
-            return true;
 		}
 	}
 	public class Return : AbstractEditAction
@@ -690,16 +668,16 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="TextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			if (textArea.Document.ReadOnly) {
-				return false;
+				return;
 			}
 			textArea.BeginUpdate();
 			textArea.Document.UndoStack.StartUndoGroup();
 			try {
 				if (textArea.HandleKeyPress('\n'))
-					return true;
+					return;
 				
 				textArea.InsertString(Environment.NewLine);
 				
@@ -713,7 +691,6 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.Document.UndoStack.EndUndoGroup();
 				textArea.EndUpdate();
 			}
-            return true;
 		}
 	}
 	
@@ -723,10 +700,10 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			if (textArea.Document.ReadOnly) {
-				return false;
+				return;
 			}
 			switch (textArea.Caret.CaretMode) {
 				case CaretMode.InsertMode:
@@ -736,7 +713,6 @@ namespace ICSharpCode.TextEditor.Actions
 					textArea.Caret.CaretMode = CaretMode.InsertMode;
 					break;
 			}
-            return true;
 		}
 	}
 	
@@ -746,10 +722,9 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			textArea.MotherTextEditorControl.Undo();
-            return true;
 		}
 	}
 	
@@ -759,10 +734,9 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			textArea.MotherTextEditorControl.Redo();
-            return true;
 		}
 	}
 	
@@ -778,15 +752,12 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
-            if (textArea.Document.ReadOnly) {
-                return false;
-            }
 			// if anything is selected we will just delete it first
 			if (textArea.SelectionManager.HasSomethingSelected) {
 				Delete.DeleteSelection(textArea);
-				return true;
+				return;
 			}
 			textArea.BeginUpdate();
 			// now delete from the caret to the beginning of the word
@@ -824,7 +795,6 @@ namespace ICSharpCode.TextEditor.Actions
 			// if there are now less lines, we need this or there are redraw problems
 			textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.PositionToEnd, new TextLocation(0, textArea.Document.GetLineNumberForOffset(textArea.Caret.Offset))));
 			textArea.Document.CommitUpdate();
-            return true;
 		}
 	}
 	
@@ -840,14 +810,11 @@ namespace ICSharpCode.TextEditor.Actions
 		/// Executes this edit action
 		/// </remarks>
 		/// <param name="textArea">The <see cref="ItextArea"/> which is used for callback purposes</param>
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
-            if (textArea.Document.ReadOnly) {
-                return false;
-            }
 			if (textArea.SelectionManager.HasSomethingSelected) {
 				DeleteSelection(textArea);
-				return true;
+				return;
 			}
 			// if anything is selected we will just delete it first
 			textArea.BeginUpdate();
@@ -871,31 +838,29 @@ namespace ICSharpCode.TextEditor.Actions
 			// if there are now less lines, we need this or there are redraw problems
 			textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.PositionToEnd, new TextLocation(0, textArea.Document.GetLineNumberForOffset(textArea.Caret.Offset))));
 			textArea.Document.CommitUpdate();
-            return true;
 		}
 	}
 	
 	public class DeleteLine : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			int lineNr = textArea.Caret.Line;
 			LineSegment line = textArea.Document.GetLineSegment(lineNr);
 			if (textArea.IsReadOnly(line.Offset, line.Length))
-				return false;
+				return;
 			textArea.Document.Remove(line.Offset, line.TotalLength);
 			textArea.Caret.Position = textArea.Document.OffsetToPosition(line.Offset);
 
 			textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.PositionToEnd, new TextLocation(0, lineNr)));
 			textArea.UpdateMatchingBracket();
 			textArea.Document.CommitUpdate();
-            return true;
 		}
 	}
 	
 	public class DeleteToLineEnd : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			int lineNr = textArea.Caret.Line;
 			LineSegment line = textArea.Document.GetLineSegment(lineNr);
@@ -906,13 +871,12 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.SingleLine, new TextLocation(0, lineNr)));
 				textArea.Document.CommitUpdate();
 			}
-            return true;
 		}
 	}
 	
 	public class GotoMatchingBrace : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			Highlight highlight = textArea.FindMatchingBracketHighlight();
 			if (highlight != null) {
@@ -933,7 +897,6 @@ namespace ICSharpCode.TextEditor.Actions
 				}
 				textArea.SetDesiredColumn();
 			}
-            return true;
 		}
 	}
 }

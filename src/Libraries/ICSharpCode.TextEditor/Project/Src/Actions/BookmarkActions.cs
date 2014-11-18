@@ -12,12 +12,12 @@ namespace ICSharpCode.TextEditor.Actions
 {
 	public class ToggleBookmark : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			textArea.Document.BookmarkManager.ToggleMarkAt(textArea.Caret.Position);
 			textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.SingleLine, textArea.Caret.Line));
 			textArea.Document.CommitUpdate();
-            return true;
+			
 		}
 	}
 	
@@ -30,7 +30,7 @@ namespace ICSharpCode.TextEditor.Actions
 			this.predicate = predicate;
 		}
 		
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			Bookmark mark = textArea.Document.BookmarkManager.GetPrevMark(textArea.Caret.Line, predicate);
 			if (mark != null) {
@@ -38,7 +38,6 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.SelectionManager.ClearSelection();
 				textArea.SetDesiredColumn();
 			}
-            return true;
 		}
 	}
 	
@@ -51,7 +50,7 @@ namespace ICSharpCode.TextEditor.Actions
 			this.predicate = predicate;
 		}
 		
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			Bookmark mark = textArea.Document.BookmarkManager.GetNextMark(textArea.Caret.Line, predicate);
 			if (mark != null) {
@@ -59,7 +58,6 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.SelectionManager.ClearSelection();
 				textArea.SetDesiredColumn();
 			}
-            return true;
 		}
 	}
 	
@@ -72,12 +70,11 @@ namespace ICSharpCode.TextEditor.Actions
 			this.predicate = predicate;
 		}
 		
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			textArea.Document.BookmarkManager.RemoveMarks(predicate);
 			textArea.Document.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
 			textArea.Document.CommitUpdate();
-            return true;
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace ICSharpCode.TextEditor.Actions
 {
 	public class CaretLeft : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			TextLocation position = textArea.Caret.Position;
 			List<FoldMarker> foldings = textArea.Document.FoldingManager.GetFoldedFoldingsWithEnd(position.Y);
@@ -41,13 +41,12 @@ namespace ICSharpCode.TextEditor.Actions
 			
 			textArea.Caret.Position = position;
 			textArea.SetDesiredColumn();
-            return true;
 		}
 	}
 	
 	public class CaretRight : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			LineSegment curLine = textArea.Document.GetLineSegment(textArea.Caret.Line);
 			TextLocation position = textArea.Caret.Position;
@@ -72,13 +71,12 @@ namespace ICSharpCode.TextEditor.Actions
 			}
 			textArea.Caret.Position = position;
 			textArea.SetDesiredColumn();
-            return true;
 		}
 	}
 	
 	public class CaretUp : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			TextLocation position = textArea.Caret.Position;
 			int lineNr = position.Y;
@@ -92,13 +90,12 @@ namespace ICSharpCode.TextEditor.Actions
 //			if (textArea.Caret.Line  > 0) {
 //				textArea.SetCaretToDesiredColumn(textArea.Caret.Line - 1);
 //			}
-            return true;
 		}
 	}
 	
 	public class CaretDown : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			TextLocation position = textArea.Caret.Position;
 			int lineNr = position.Y;
@@ -114,13 +111,12 @@ namespace ICSharpCode.TextEditor.Actions
 //			if (textArea.Caret.Line + 1 < textArea.Document.TotalNumberOfLines) {
 //				textArea.SetCaretToDesiredColumn(textArea.Caret.Line + 1);
 //			}
-            return true;
 		}
 	}
 	
 	public class WordRight : CaretRight
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			LineSegment line   = textArea.Document.GetLineSegment(textArea.Caret.Position.Y);
 			TextLocation oldPos = textArea.Caret.Position;
@@ -147,13 +143,12 @@ namespace ICSharpCode.TextEditor.Actions
 			
 			textArea.Caret.Position = newPos;
 			textArea.SetDesiredColumn();
-            return true;
 		}
 	}
 	
 	public class WordLeft : CaretLeft
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			TextLocation oldPos = textArea.Caret.Position;
 			if (textArea.Caret.Column == 0) {
@@ -180,30 +175,29 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.Caret.Position = newPos;
 				textArea.SetDesiredColumn();
 			}
-            return true;
+			
+			
 		}
 	}
 	
 	public class ScrollLineUp : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			textArea.AutoClearSelection = false;
 			
 			textArea.MotherTextAreaControl.VScrollBar.Value = Math.Max(textArea.MotherTextAreaControl.VScrollBar.Minimum,
 			                                                           textArea.VirtualTop.Y - textArea.TextView.FontHeight);
-            return true;
 		}
 	}
 	
 	public class ScrollLineDown : AbstractEditAction
 	{
-		public override bool Execute(TextArea textArea)
+		public override void Execute(TextArea textArea)
 		{
 			textArea.AutoClearSelection = false;
 			textArea.MotherTextAreaControl.VScrollBar.Value = Math.Min(textArea.MotherTextAreaControl.VScrollBar.Maximum,
 			                                                           textArea.VirtualTop.Y + textArea.TextView.FontHeight);
-            return true;
 		}
 	}
 }

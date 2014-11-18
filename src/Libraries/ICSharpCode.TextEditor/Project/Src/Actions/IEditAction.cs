@@ -27,7 +27,7 @@ namespace ICSharpCode.TextEditor.Actions
 		/// <remarks>
 		/// When the key which is defined per XML is pressed, this method will be launched.
 		/// </remarks>
-		bool Execute(TextArea textArea);
+		void Execute(TextArea textArea);
 	}
 	
 	/// <summary>
@@ -53,6 +53,6 @@ namespace ICSharpCode.TextEditor.Actions
 		/// <remarks>
 		/// When the key which is defined per XML is pressed, this method will be launched.
 		/// </remarks>
-		public abstract bool Execute(TextArea textArea);
+		public abstract void Execute(TextArea textArea);
 	}		
 }

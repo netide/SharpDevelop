@@ -694,11 +694,10 @@ namespace ICSharpCode.TextEditor
 			IEditAction action =  motherTextEditorControl.GetEditAction(keyData);
 			AutoClearSelection = true;
 			if (action != null) {
-                bool result;
 				BeginUpdate();
 				try {
 					lock (Document) {
-						result = action.Execute(this);
+						action.Execute(this);
 						if (SelectionManager.HasSomethingSelected && AutoClearSelection /*&& caretchanged*/) {
 							if (Document.TextEditorProperties.DocumentSelectionMode == DocumentSelectionMode.Normal) {
 								SelectionManager.ClearSelection();
@@ -709,7 +708,7 @@ namespace ICSharpCode.TextEditor
 					EndUpdate();
 					Caret.UpdateCaretPosition();
 				}
-				return result;
+				return true;
 			}
 			return false;
 		}
