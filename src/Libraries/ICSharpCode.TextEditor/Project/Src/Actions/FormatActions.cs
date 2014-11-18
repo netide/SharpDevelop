@@ -16,10 +16,10 @@ namespace ICSharpCode.TextEditor.Actions
 		protected TextArea textArea;
 		abstract protected void Convert(IDocument document, int startLine, int endLine);
 		
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			if (textArea.SelectionManager.SelectionIsReadonly) {
-				return;
+				return false;
 			}
 			this.textArea = textArea;
 			textArea.BeginUpdate();
@@ -35,6 +35,7 @@ namespace ICSharpCode.TextEditor.Actions
 			textArea.Caret.ValidateCaretPos();
 			textArea.EndUpdate();
 			textArea.Refresh();
+            return true;
 		}
 	}
 	
@@ -43,10 +44,10 @@ namespace ICSharpCode.TextEditor.Actions
 		protected TextArea textArea;
 		abstract protected void Convert(IDocument document, int offset, int length);
 		
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			if (textArea.SelectionManager.SelectionIsReadonly) {
-				return;
+				return false;
 			}
 			this.textArea = textArea;
 			textArea.BeginUpdate();
@@ -60,6 +61,7 @@ namespace ICSharpCode.TextEditor.Actions
 			textArea.Caret.ValidateCaretPos();
 			textArea.EndUpdate();
 			textArea.Refresh();
+            return true;
 		}
 	}
 	

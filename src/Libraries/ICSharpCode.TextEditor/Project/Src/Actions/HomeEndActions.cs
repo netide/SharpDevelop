@@ -15,7 +15,7 @@ namespace ICSharpCode.TextEditor.Actions
 {
 	public class Home : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			LineSegment curLine;
 			TextLocation       newPos = textArea.Caret.Position;
@@ -55,12 +55,13 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.Caret.Position = newPos;
 				textArea.SetDesiredColumn();
 			}
+            return true;
 		}
 	}
 	
 	public class End : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			LineSegment curLine;
 			TextLocation newPos = textArea.Caret.Position;
@@ -84,31 +85,34 @@ namespace ICSharpCode.TextEditor.Actions
 				textArea.Caret.Position = newPos;
 				textArea.SetDesiredColumn();
 			}
+            return true;
 		}
 	}
 	
 	
 	public class MoveToStart : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			if (textArea.Caret.Line != 0 || textArea.Caret.Column != 0) {
 				textArea.Caret.Position = new TextLocation(0, 0);
 				textArea.SetDesiredColumn();
 			}
+            return true;
 		}
 	}
 	
 	
 	public class MoveToEnd : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation endPos = textArea.Document.OffsetToPosition(textArea.Document.TextLength);
 			if (textArea.Caret.Position != endPos) {
 				textArea.Caret.Position = endPos;
 				textArea.SetDesiredColumn();
 			}
+            return true;
 		}
 	}
 }

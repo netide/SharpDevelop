@@ -13,139 +13,151 @@ namespace ICSharpCode.TextEditor.Actions
 {
 	public class ShiftCaretRight : CaretRight
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftCaretLeft : CaretLeft
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftCaretUp : CaretUp
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftCaretDown : CaretDown
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftWordRight : WordRight
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftWordLeft : WordLeft
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftHome : Home
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftEnd : End
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftMoveToStart : MoveToStart
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftMoveToEnd : MoveToEnd
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftMovePageUp : MovePageUp
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class ShiftMovePageDown : MovePageDown
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			TextLocation oldCaretPos  = textArea.Caret.Position;
 			base.Execute(textArea);
 			textArea.AutoClearSelection = false;
 			textArea.SelectionManager.ExtendSelection(oldCaretPos, textArea.Caret.Position);
+            return true;
 		}
 	}
 	
 	public class SelectWholeDocument : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			textArea.AutoClearSelection = false;
 			TextLocation startPoint = new TextLocation(0, 0);
@@ -153,7 +165,7 @@ namespace ICSharpCode.TextEditor.Actions
 			if (textArea.SelectionManager.HasSomethingSelected) {
 				if (textArea.SelectionManager.SelectionCollection[0].StartPosition == startPoint &&
 				    textArea.SelectionManager.SelectionCollection[0].EndPosition   == endPoint) {
-					return;
+					return true;
 				}
 			}
 			textArea.Caret.Position = textArea.SelectionManager.NextValidPosition(endPoint.Y);
@@ -163,14 +175,22 @@ namespace ICSharpCode.TextEditor.Actions
 			// is moved up or down a line, the caret will take on the column that
 			// it was in before the SelectWholeDocument
 			textArea.SetDesiredColumn();
+            return true;
 		}
 	}
 	
 	public class ClearAllSelections : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
-			textArea.SelectionManager.ClearSelection();
+            // Even though this action does not modify the document, we still
+            // return false here so the dialog form can handle this key to close
+            // the dialog.
+            if (textArea.Document.ReadOnly) {
+                return false;
+            }
+            textArea.SelectionManager.ClearSelection();
+            return true;
 		}
 	}
 }

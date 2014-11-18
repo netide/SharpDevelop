@@ -13,7 +13,7 @@ namespace ICSharpCode.TextEditor.Actions
 {
 	public class ToggleFolding : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			List<FoldMarker> foldMarkers = textArea.Document.FoldingManager.GetFoldingsWithStart(textArea.Caret.Line);
 			if (foldMarkers.Count != 0) {
@@ -34,12 +34,13 @@ namespace ICSharpCode.TextEditor.Actions
 				}
 			}
 			textArea.Document.FoldingManager.NotifyFoldingsChanged(EventArgs.Empty);
+            return true;
 		}
 	}
 	
 	public class ToggleAllFoldings : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			bool doFold = true;
 			foreach (FoldMarker fm in  textArea.Document.FoldingManager.FoldMarker) {
@@ -52,17 +53,19 @@ namespace ICSharpCode.TextEditor.Actions
 				fm.IsFolded = doFold;
 			}
 			textArea.Document.FoldingManager.NotifyFoldingsChanged(EventArgs.Empty);
+            return true;
 		}
 	}
 	
 	public class ShowDefinitionsOnly : AbstractEditAction
 	{
-		public override void Execute(TextArea textArea)
+		public override bool Execute(TextArea textArea)
 		{
 			foreach (FoldMarker fm in  textArea.Document.FoldingManager.FoldMarker) {
 				fm.IsFolded = fm.FoldType == FoldType.MemberBody || fm.FoldType == FoldType.Region;
 			}
 			textArea.Document.FoldingManager.NotifyFoldingsChanged(EventArgs.Empty);
+            return true;
 		}
 	}
 }
