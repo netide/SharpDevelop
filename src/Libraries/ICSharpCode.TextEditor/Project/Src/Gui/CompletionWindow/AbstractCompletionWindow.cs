@@ -142,17 +142,16 @@ namespace ICSharpCode.TextEditor.Gui.CompletionWindow
 			return false;
 		}
 		
-		protected virtual bool ProcessTextAreaKey(Keys keyData)
+		protected virtual void ProcessTextAreaKey(Keys keyData, ref DialogKeyProcessorResult result)
 		{
-			if (!Visible) {
-				return false;
-			}
-			switch (keyData) {
-				case Keys.Escape:
-					Close();
-					return true;
-			}
-			return false;
+            if (!Visible) {
+                switch (keyData) {
+                    case Keys.Escape:
+                        Close();
+                        result = DialogKeyProcessorResult.Processed;
+                        break;
+                }
+            }
 		}
 		
 		protected virtual void CaretOffsetChanged(object sender, EventArgs e)

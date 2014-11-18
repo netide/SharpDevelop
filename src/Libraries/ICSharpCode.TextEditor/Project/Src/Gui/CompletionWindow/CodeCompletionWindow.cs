@@ -240,39 +240,47 @@ namespace ICSharpCode.TextEditor.Gui.CompletionWindow
 			}
 		}
 		
-		protected override bool ProcessTextAreaKey(Keys keyData)
+		protected override void ProcessTextAreaKey(Keys keyData, ref DialogKeyProcessorResult result)
 		{
 			if (!Visible) {
-				return false;
+				return;
 			}
 			
 			switch (keyData) {
 				case Keys.Home:
 					codeCompletionListView.SelectIndex(0);
-					return true;
+                    result = DialogKeyProcessorResult.Processed;
+					return;
 				case Keys.End:
 					codeCompletionListView.SelectIndex(completionData.Length-1);
-					return true;
+					result = DialogKeyProcessorResult.Processed;
+					return;
 				case Keys.PageDown:
 					codeCompletionListView.PageDown();
-					return true;
+					result = DialogKeyProcessorResult.Processed;
+					return;
 				case Keys.PageUp:
 					codeCompletionListView.PageUp();
-					return true;
+					result = DialogKeyProcessorResult.Processed;
+					return;
 				case Keys.Down:
 					codeCompletionListView.SelectNextItem();
-					return true;
+					result = DialogKeyProcessorResult.Processed;
+					return;
 				case Keys.Up:
 					codeCompletionListView.SelectPrevItem();
-					return true;
+					result = DialogKeyProcessorResult.Processed;
+					return;
 				case Keys.Tab:
 					InsertSelectedItem('\t');
-					return true;
+					result = DialogKeyProcessorResult.Processed;
+					return;
 				case Keys.Return:
 					InsertSelectedItem('\n');
-					return true;
+					result = DialogKeyProcessorResult.Processed;
+					return;
 			}
-			return base.ProcessTextAreaKey(keyData);
+			base.ProcessTextAreaKey(keyData, ref result);
 		}
 		
 		void CodeCompletionListViewDoubleClick(object sender, EventArgs e)

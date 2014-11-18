@@ -35,10 +35,10 @@ namespace ICSharpCode.TextEditor.Gui.InsightWindow
 		}
 		
 		#region Event handling routines
-		protected override bool ProcessTextAreaKey(Keys keyData)
+		protected override void ProcessTextAreaKey(Keys keyData, ref DialogKeyProcessorResult result)
 		{
 			if (!Visible) {
-				return false;
+				return;
 			}
 			switch (keyData) {
 				case Keys.Down:
@@ -46,15 +46,17 @@ namespace ICSharpCode.TextEditor.Gui.InsightWindow
 						CurrentData = (CurrentData + 1) % DataProvider.InsightDataCount;
 						Refresh();
 					}
-					return true;
+                    result = DialogKeyProcessorResult.Processed;
+					return;
 				case Keys.Up:
 					if (DataProvider != null && DataProvider.InsightDataCount > 0) {
 						CurrentData = (CurrentData + DataProvider.InsightDataCount - 1) % DataProvider.InsightDataCount;
 						Refresh();
 					}
-					return true;
+					result = DialogKeyProcessorResult.Processed;
+					return;
 			}
-			return base.ProcessTextAreaKey(keyData);
+			base.ProcessTextAreaKey(keyData, ref result);
 		}
 		
 		protected override void CaretOffsetChanged(object sender, EventArgs e)

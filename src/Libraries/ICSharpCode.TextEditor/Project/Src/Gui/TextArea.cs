@@ -21,7 +21,14 @@ using ICSharpCode.TextEditor.Gui.CompletionWindow;
 namespace ICSharpCode.TextEditor
 {
 	public delegate bool KeyEventHandler(char ch);
-	public delegate bool DialogKeyProcessor(Keys keyData);
+	public delegate void DialogKeyProcessor(Keys keyData, ref DialogKeyProcessorResult result);
+
+    public enum DialogKeyProcessorResult
+    {
+        NotProcessed,
+        Processed,
+        Ignore
+    }
 	
 	/// <summary>
 	/// This class paints the textarea.
@@ -686,8 +693,16 @@ namespace ICSharpCode.TextEditor
 		public bool ExecuteDialogKey(Keys keyData)
 		{
 			// try, if a dialog key processor was set to use this
-			if (DoProcessDialogKey != null && DoProcessDialogKey(keyData)) {
-				return true;
+            var dialogKeyProcessed = DialogKeyProcessorResult.Ignore;
+			if (DoProcessDialogKey != null) {
+                DoProcessDialogKey(keyData, ref dialogKeyProcessed);
+                switch (dialogKeyProcessed)
+                {
+                    case DialogKeyProcessorResult.NotProcessed:
+                        return false;
+                    case DialogKeyProcessorResult.Processed:
+                        return true;
+                }
 			}
 			
 			// if not (or the process was 'silent', use the standard edit actions
