@@ -94,10 +94,12 @@ namespace ICSharpCode.TextEditor
 			Controls.Add(textArea);
 			
 			vScrollBar.ValueChanged += new EventHandler(VScrollBarValueChanged);
+            vScrollBar.VisibleChanged += (s, e) => ResizeTextArea();
 			Controls.Add(this.vScrollBar);
 			
 			hScrollBar.ValueChanged += new EventHandler(HScrollBarValueChanged);
-			Controls.Add(this.hScrollBar);
+            hScrollBar.VisibleChanged += (s, e) => ResizeTextArea();
+            Controls.Add(this.hScrollBar);
 			ResizeRedraw = true;
 
             motherTextEditorControl.DocumentAssigned += DocumentAssigned;
@@ -168,19 +170,31 @@ namespace ICSharpCode.TextEditor
 				y = hRuler.Bounds.Bottom;
 				h = hRuler.Bounds.Height;
 			}
+
+            int width = Width;
+            if (vScrollBar.Visible)
+                width -= SystemInformation.HorizontalScrollBarArrowWidth;
+            int height = Height - h;
+            if (hScrollBar.Visible)
+                height -= SystemInformation.VerticalScrollBarArrowHeight;
 			
-			textArea.Bounds = new Rectangle(0, y,
-			                                Width - SystemInformation.HorizontalScrollBarArrowWidth,
-			                                Height - SystemInformation.VerticalScrollBarArrowHeight - h);
+			textArea.Bounds = new Rectangle(0, y, width, height);
 			SetScrollBarBounds();
 		}
 		
 		public void SetScrollBarBounds()
 		{
-			vScrollBar.Bounds = new Rectangle(textArea.Bounds.Right, 0, SystemInformation.HorizontalScrollBarArrowWidth, Height - SystemInformation.VerticalScrollBarArrowHeight);
+            int vScrollBarHeight = Height;
+            if (hScrollBar.Visible)
+                vScrollBarHeight -= SystemInformation.VerticalScrollBarArrowHeight;
+            int hScrollBarWidth = Width;
+            if (vScrollBar.Visible)
+                hScrollBarWidth -= SystemInformation.HorizontalScrollBarArrowWidth;
+
+			vScrollBar.Bounds = new Rectangle(textArea.Bounds.Right, 0, SystemInformation.HorizontalScrollBarArrowWidth, vScrollBarHeight);
 			hScrollBar.Bounds = new Rectangle(0,
 			                                  textArea.Bounds.Bottom,
-			                                  Width - SystemInformation.HorizontalScrollBarArrowWidth,
+			                                  hScrollBarWidth,
 			                                  SystemInformation.VerticalScrollBarArrowHeight);
 		}
 		
