@@ -278,6 +278,9 @@ namespace ICSharpCode.TextEditor
 			
 			hScrollBar.LargeChange = Math.Max(0, textArea.TextView.VisibleColumnCount - 1);
 			hScrollBar.SmallChange = Math.Max(0, (int)textArea.TextView.SpaceWidth);
+
+            if (ScrollBarsAdjusted != null)
+                ScrollBarsAdjusted(this, EventArgs.Empty);
 		}
 		
 		public void OptionsChanged()
@@ -456,6 +459,8 @@ namespace ICSharpCode.TextEditor
 		}
 		
 		public event MouseEventHandler ShowContextMenu;
+
+        public event EventHandler ScrollBarsAdjusted;
 		
 		protected override void WndProc(ref Message m)
 		{
