@@ -537,6 +537,14 @@ namespace ICSharpCode.TextEditor
 			return (IEditAction)editactions[keyData];
 		}
 
+        public void SetEditAction(Keys keys, IEditAction editAction)
+        {
+            if (editAction == null)
+                editactions.Remove(keys);
+            else
+                editactions[keys] = editAction;
+        }
+
 		void GenerateDefaultActions()
 		{
 			editactions[Keys.Left] = new CaretLeft();
