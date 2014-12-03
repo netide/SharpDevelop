@@ -172,10 +172,10 @@ namespace ICSharpCode.TextEditor
 			}
 
             int width = Width;
-            if (vScrollBar.Visible)
+            if (vScrollBar == null || vScrollBar.Visible)
                 width -= SystemInformation.HorizontalScrollBarArrowWidth;
             int height = Height - h;
-            if (hScrollBar.Visible)
+            if (hScrollBar == null || hScrollBar.Visible)
                 height -= SystemInformation.VerticalScrollBarArrowHeight;
 			
 			textArea.Bounds = new Rectangle(0, y, width, height);
@@ -184,6 +184,9 @@ namespace ICSharpCode.TextEditor
 		
 		public void SetScrollBarBounds()
 		{
+            if (hScrollBar == null || vScrollBar == null)
+                return;
+
             int vScrollBarHeight = Height;
             if (hScrollBar.Visible)
                 vScrollBarHeight -= SystemInformation.VerticalScrollBarArrowHeight;
